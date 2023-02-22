@@ -1,129 +1,75 @@
-<img src="logo/bustub.svg" alt="BusTub Logo" height="200">
+## cmu-db的安装
 
------------------
+Database system project based on CMU 15-445/645 (FALL 2020) 
 
-[![Build Status](https://travis-ci.org/cmu-db/bustub.svg?branch=master)](https://travis-ci.org/cmu-db/bustub)
-[![CircleCI](https://circleci.com/gh/cmu-db/bustub/tree/master.svg?style=svg)](https://circleci.com/gh/cmu-db/bustub/tree/master)
+参考：https://github.com/cmu-db/bustub/blob/master/README.md
 
-BusTub is a relational database management system built at [Carnegie Mellon University](https://db.cs.cmu.edu) for the [Introduction to Database Systems](https://15445.courses.cs.cmu.edu) (15-445/645) course. This system was developed for educational purposes and should not be used in production environments.
+课程链接：https://15445.courses.cs.cmu.edu/fall2020/
 
-**WARNING: IF YOU ARE A STUDENT IN THE CLASS, DO NOT DIRECTLY FORK THIS REPO. DO NOT PUSH PROJECT SOLUTIONS PUBLICLY. THIS IS AN ACADEMIC INTEGRITY VIOLATION AND CAN LEAD TO GETTING YOUR DEGREE REVOKED, EVEN AFTER YOU GRADUATE.**
 
-## Cloning this repo
+---
 
-The following instructions will create a private BusTub that you can use for your development:
+### 克隆存储库
 
-1. Go to [https://github.com/new](https://github.com/new) to create a new repo under your account. Pick a name (e.g. `private-bustub`) and make sure it is you select it as **private**.
-2. On your development machine, clone the public BusTub:
-   ```
-   $ git clone --depth 1 https://github.com/cmu-db/bustub.git public-bustub
-   ```
-3. You next need to [mirror](https://git-scm.com/docs/git-push#Documentation/git-push.txt---mirror) the public BusTub repo into your own private BusTub repo. Suppose your GitHub name is `student` and your repo name is `private-bustub`, you will execute the following commands:
-   ```
-   $ cd public-bustub
-   $ git push --mirror git@github.com:student/private-bustub.git
-   ```
-   This copies everything in the public BusTub repo into your own private repo. You can now delete this bustub directory:
-   ```
-   $ cd ..
-   $ rm -rv public-bustub
-   ```
-4. Clone your own private repo on:
-   ```
-   $ git clone git@github.com:student/private-bustub.git
-   ```
-5. Add the public BusTub as a remote source. This will allow you to retrieve changes from the CMU-DB repository during the semester:
-   ```
-   $ git remote add public https://github.com/cmu-db/bustub.git
-   ```
-6. You can now pull in changes from the public BusTub as needed:
-   ```
-   $ git pull public master
-   ```
+github上新建一个仓库，名为`database-cmu15445-fall2020`。
 
-We suggest working on your projects in separate branches. If you do not understand how Git branches work, [learn how](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging). If you fail to do this, you might lose all your work at some point in the semester, and nobody will be able to help you.
+```bash
+$ cd /Users/huangxin/code/cpp
+$ git clone --bare https://github.com/cmu-db/bustub.git bustub-public
+$ cd bustub-public
 
-## Build
+$ git push git@github.com:student/bustub-private.git master #同步到自己的远程仓库
 
-### Linux / Mac
-To ensure that you have the proper packages on your machine, run the following script to automatically install them:
+$ cd ..
+$ rm -rf bustub-public
 
-```
-$ sudo build_support/packages.sh
+$ git https://github.com/isHuangXin/CMU15-445.git # 从自己的远程仓库拉取到本地
+
+$ git reset --hard 444765a
+HEAD 现在位于 444765a Add PR template. (#156)
+
+# git remote add public git@github.com:cmu-db/bustub.git
+# git pull public master
+
+# Bugfix for M1
+# Bugfix: -mcpu=apple-m1 && sprintf
+
+$ git add .
+$ git commit -m 'Bugfix: -mcpu=apple-m1 && sprintf'
+$ git push -f origin master # 将更改好的初始化仓库推送到自己的远程仓库
+
+# Just have a start
+# 可以开始编码完成4个Project了
+
+# Project 1: C++ Primer
+# Project 2: Buffer Pool Manager
+# Project 3: B+Tree Index
+# Project 4: Query Execution
+# Project 4: Concurrency Control
 ```
 
-Then run the following commands to build the system:
+### build
 
-```
+经测试，支持macOS M1，Apple Silicon编译。
+
+```bash
+# First install the packages that BusTub requires:
+$ sudo ./build_support/packages.sh
+
+# To build the system from the commandline, execute the following commands:
 $ mkdir build
 $ cd build
 $ cmake ..
 $ make
-```
 
-If you want to compile the system in debug mode, pass in the following flag to cmake:
-Debug mode:
+# To speed up the build process, you can use multiple threads by passing the -j flag to make. For example, the following command will build the system using four threads:
+$ make -j 4
 
-```
-$ cmake -DCMAKE_BUILD_TYPE=Debug ..
-$ make
-```
-This enables [AddressSanitizer](https://github.com/google/sanitizers), which can generate false positives for overflow on STL containers. If you encounter this, define the environment variable `ASAN_OPTIONS=detect_container_overflow=0`.
 
-### Windows
-If you are using Windows 10, you can use the Windows Subsystem for Linux (WSL) to develop, build, and test Bustub. All you need is to [Install WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10). You can just choose "Ubuntu" (no specific version) in Microsoft Store. Then, enter WSL and follow the above instructions.
-
-If you are using CLion, it also [works with WSL](https://blog.jetbrains.com/clion/2018/01/clion-and-linux-toolchain-on-windows-are-now-friends).
-
-## Testing
-```
+# TESTING
+# You can compile and run each test individually from the command-line:
+$ mkdir build
 $ cd build
-$ make check-tests
+$ make starter_test
+$ ./test/starter_test
 ```
-
-## Build environment
-
-If you have trouble getting cmake or make to run, an easy solution is to create a virtual container to build in. There are two options available:
-
-### Vagrant
-First, make sure you have Vagrant and Virtualbox installed
-```
-$ sudo apt update
-$ sudo apt install vagrant virtualbox
-```
-
-From the repository directory, run this command to create and start a Vagrant box:
-
-```
-$ vagrant up
-```
-
-This will start a Vagrant box running Ubuntu 20.02 in the background with all the packages needed. To access it, type
-
-```
-$ vagrant ssh
-```
-
-to open a shell within the box. You can find Bustub's code mounted at `/bustub` and run the commands mentioned above like normal.
-
-### Docker
-First, make sure that you have docker installed:
-```
-$ sudo apt update
-$ sudo apt install docker
-```
-
-From the repository directory, run these commands to create a Docker image and container:
-
-```
-$ docker build . -t bustub
-$ docker create -t -i --name bustub -v $(pwd):/bustub bustub bash
-```
-
-This will create a Docker image and container. To run it, type:
-
-```
-$ docker start -a -i bustub
-```
-
-to open a shell within the box. You can find Bustub's code mounted at `/bustub` and run the commands mentioned above like normal.
